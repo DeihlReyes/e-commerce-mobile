@@ -1,27 +1,27 @@
-import 'package:ecommerce_bloc_project/features/cart/bloc/cart_bloc.dart';
-import 'package:ecommerce_bloc_project/features/home/bloc/home_bloc.dart';
 import 'package:ecommerce_bloc_project/features/home/models/home_product_data_model.dart';
 import 'package:ecommerce_bloc_project/features/wishlist/bloc/wishlist_bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class WishlistTileWidget extends StatelessWidget {
   final ProductDataModel productDataModel;
   final WishlistBloc wishlistBloc;
-  const WishlistTileWidget(
-      {required this.wishlistBloc, required this.productDataModel, super.key});
+
+  const WishlistTileWidget({
+    required this.wishlistBloc,
+    required this.productDataModel,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 211, 211, 211),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.black),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -29,10 +29,11 @@ class WishlistTileWidget extends StatelessWidget {
             height: 100,
             width: 100,
             decoration: BoxDecoration(
-                image: DecorationImage(
-              fit: BoxFit.fill,
-              image: NetworkImage(productDataModel.imageUrl),
-            )),
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image: NetworkImage(productDataModel.imageUrl),
+              ),
+            ),
           ),
           const SizedBox(
             width: 20,
@@ -64,16 +65,12 @@ class WishlistTileWidget extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                        onPressed: () {
-                          wishlistBloc.add(WishlistRemovedFromWIshlistEvent(
-                              clickedProduct: productDataModel));
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('Item removed from Wishlist'),
-                            duration: Duration(milliseconds: 250),
-                          ));
-                        },
-                        icon: const Icon(Icons.delete_outline)),
+                      onPressed: () {
+                        _showRemoveConfirmationDialog(context);
+                      },
+                      icon: const Icon(Icons.delete_outline),
+                      color: const Color(0xFFFF4500),
+                    ),
                   ],
                 ),
               ],
@@ -81,6 +78,47 @@ class WishlistTileWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showRemoveConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Remove Item from Wishlist'),
+          content: const Text(
+              'Are you sure you want to remove this item from your wishlist?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              style: TextButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 0, 35, 102)),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                wishlistBloc.add(
+                  WishlistRemovedFromWIshlistEvent(
+                      clickedProduct: productDataModel),
+                );
+                Navigator.of(context).pop(); // Close the dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Item removed from Wishlist'),
+                    duration: Duration(milliseconds: 250),
+                  ),
+                );
+              },
+              style: TextButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 0, 35, 102)),
+              child: const Text('Remove'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

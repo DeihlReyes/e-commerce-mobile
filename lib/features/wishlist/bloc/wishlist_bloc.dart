@@ -10,7 +10,7 @@ part 'wishlist_event.dart';
 part 'wishlist_state.dart';
 
 class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
-  WishlistBloc() : super(WishlistInitial()) {
+  WishlistBloc() : super(WishlistState()) {
     on<WishlistInitialEvent>(_wishlistInitialEvent);
     on<WishlistRemovedFromWIshlistEvent>(_wishlistRemovedFromWIshlistEvent);
   }
@@ -19,7 +19,7 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
       WishlistInitialEvent event, Emitter<WishlistState> emit) {
     final box = Hive.box<ProductDataModel>('wishListItems');
     final wishlistItems = box.values.toList();
-    emit(WishlistSuccessState(wishlistItems: wishlistItems));
+    emit(state.copyWith(wishlistItems: wishlistItems));
   }
 
   FutureOr<void> _wishlistRemovedFromWIshlistEvent(
@@ -33,6 +33,6 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     await box.deleteAt(indexToDelete);
     final wishlistItems = box.values.toList();
     print(wishlistItems);
-    emit(WishlistSuccessState(wishlistItems: wishlistItems));
+    emit(state.copyWith(wishlistItems: wishlistItems));
   }
 }

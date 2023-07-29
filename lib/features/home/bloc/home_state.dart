@@ -1,30 +1,30 @@
 part of 'home_bloc.dart';
 
-@immutable
-abstract class HomeState {}
+class HomeState {
+  final List<ProductDataModel>? products;
+  final bool loading;
+  final bool wishlistButtonNavigation;
+  final bool cartButtonNavigation;
 
-abstract class HomeActionState extends HomeState {}
+  HomeState({
+    this.products,
+    this.loading = false,
+    this.wishlistButtonNavigation = false,
+    this.cartButtonNavigation = false,
+  });
 
-class HomeInitial extends HomeState {}
-
-class HomeLoadingState extends HomeState {}
-
-class HomeNoItemFoundState extends HomeState {}
-
-class HomeLoadedSuccessState extends HomeState {
-  final List<ProductDataModel> products;
-
-  HomeLoadedSuccessState({required this.products});
+  HomeState copyWith({
+    List<ProductDataModel>? products,
+    bool? loading,
+    bool? wishlistButtonNavigation,
+    bool? cartButtonNavigation,
+  }) {
+    return HomeState(
+      products: products ?? this.products,
+      loading: loading ?? this.loading,
+      wishlistButtonNavigation:
+          wishlistButtonNavigation ?? this.wishlistButtonNavigation,
+      cartButtonNavigation: cartButtonNavigation ?? this.cartButtonNavigation,
+    );
+  }
 }
-
-class HomeErrorState extends HomeState {}
-
-class HomeNavigateToWishlistPage {}
-
-class HomeNavigateToWishlistPageActionState extends HomeActionState {}
-
-class HomeNavigateToCartPageActionState extends HomeActionState {}
-
-class HomeProductItemWishListedActionState extends HomeActionState {}
-
-class HomeProductItemCartedActionState extends HomeActionState {}

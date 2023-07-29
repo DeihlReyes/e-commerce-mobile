@@ -1,6 +1,5 @@
 part of 'home_bloc.dart';
 
-@immutable
 abstract class HomeEvent {}
 
 class HomeInitialEvent extends HomeEvent {}
@@ -9,9 +8,6 @@ class HomeReloadEvent extends HomeEvent {
   final String searchQuery;
 
   HomeReloadEvent({required this.searchQuery});
-
-  @override
-  List<Object> get props => [searchQuery];
 }
 
 class HomeProductWishlistButtonClickedEvent extends HomeEvent {

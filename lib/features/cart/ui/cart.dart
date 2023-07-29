@@ -1,14 +1,10 @@
 import 'package:ecommerce_bloc_project/features/cart/bloc/cart_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../home/ui/product_tile_widget.dart';
-import 'cart_tile_widget.dart';
+import 'package:ecommerce_bloc_project/features/cart/ui/cart_tile_widget.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({super.key});
+  const Cart({Key? key}) : super(key: key);
 
   @override
   State<Cart> createState() => _CartState();
@@ -16,6 +12,7 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   final CartBloc cartBloc = CartBloc();
+
   @override
   void initState() {
     cartBloc.add(CartInitialEvent());
@@ -26,39 +23,33 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFFFF4500),
         title: const Text('My Cart'),
       ),
-      body: BlocConsumer<CartBloc, CartState>(
+      body: BlocBuilder<CartBloc, CartState>(
         bloc: cartBloc,
-        listener: (context, state) {},
-        listenWhen: (previous, current) => current is CartActionState,
-        buildWhen: (previous, current) => current is! CartActionState,
         builder: (context, state) {
-          switch (state.runtimeType) {
-            case CartSuccessState:
-              final successState = state as CartSuccessState;
-              return ListView.builder(
-                  itemCount: successState.cartItems.length,
-                  itemBuilder: ((context, index) {
-                    return CartTileWidget(
-                      cartBloc: cartBloc,
-                      productDataModel: successState.cartItems[index],
-                    );
-                  }));
-            case CartProductItemDeletedActionState:
-              final successState = state as CartSuccessState;
-              return ListView.builder(
-                  itemCount: successState.cartItems.length,
-                  itemBuilder: ((context, index) {
-                    return CartTileWidget(
-                      cartBloc: cartBloc,
-                      productDataModel: successState.cartItems[index],
-                    );
-                  }));
-            default:
-          }
-          return Container();
+          return Container(
+            color: const Color.fromARGB(255, 0, 35, 102),
+            padding: const EdgeInsets.fromLTRB(5, 5, 5, 17),
+            child: state.cartItems.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No items in cart yet. Add to Cart now!',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: state.cartItems.length,
+                    itemBuilder: (context, index) {
+                      final product = state.cartItems[index];
+                      return CartTileWidget(
+                        cartBloc: cartBloc,
+                        productDataModel: product,
+                      );
+                    },
+                  ),
+          );
         },
       ),
     );

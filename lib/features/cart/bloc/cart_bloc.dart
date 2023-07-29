@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-//import 'package:ecommerce_bloc_project/data/cart_items.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 
@@ -11,19 +10,19 @@ part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  CartBloc() : super(CartInitial()) {
+  CartBloc() : super(const CartState()) {
     on<CartInitialEvent>(_cartInitialEvent);
     on<CartRemovedFromCartEvent>(_cartRemovedFromCartEvent);
   }
 
-  FutureOr<void> _cartInitialEvent(
-      CartInitialEvent event, Emitter<CartState> emit) {
+  Future<void> _cartInitialEvent(
+      CartInitialEvent event, Emitter<CartState> emit) async {
     final box = Hive.box<ProductDataModel>('cartItems');
     final cartItems = box.values.toList();
-    emit(CartSuccessState(cartItems: cartItems));
+    emit(state.copyWith(cartItems: cartItems));
   }
 
-  FutureOr<void> _cartRemovedFromCartEvent(
+  Future<void> _cartRemovedFromCartEvent(
       CartRemovedFromCartEvent event, Emitter<CartState> emit) async {
     print('Delete Product Clicked');
     final box = Hive.box<ProductDataModel>('cartItems');
@@ -32,6 +31,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         .indexWhere((item) => item.id == event.clickedProduct.id);
     await box.deleteAt(indexToDelete);
     final cartItems = box.values.toList();
-    emit(CartSuccessState(cartItems: cartItems));
+    emit(state.copyWith(cartItems: cartItems));
   }
 }

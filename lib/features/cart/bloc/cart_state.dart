@@ -1,16 +1,22 @@
 part of 'cart_bloc.dart';
 
 @immutable
-abstract class CartState {}
-
-abstract class CartActionState extends CartState {}
-
-class CartInitial extends CartState {}
-
-class CartProductItemDeletedActionState extends CartActionState {}
-
-class CartSuccessState extends CartState {
+class CartState {
   final List<ProductDataModel> cartItems;
+  final bool loading;
 
-  CartSuccessState({required this.cartItems});
+  const CartState({
+    this.cartItems = const [],
+    this.loading = false,
+  });
+
+  CartState copyWith({
+    List<ProductDataModel>? cartItems,
+    bool? loading,
+  }) {
+    return CartState(
+      cartItems: cartItems ?? this.cartItems,
+      loading: loading ?? this.loading,
+    );
+  }
 }

@@ -1,22 +1,22 @@
 part of 'wishlist_bloc.dart';
 
 @immutable
-abstract class WishlistState {}
-
-abstract class WishlistActionState extends WishlistState {}
-
-class WishlistInitial extends WishlistState {}
-
-class CartProductItemDeletedActionState extends WishlistState {}
-
-class WishlistSuccessState extends WishlistState {
+class WishlistState {
   final List<ProductDataModel> wishlistItems;
+  final bool loading;
 
-  WishlistSuccessState({required this.wishlistItems});
-}
+  const WishlistState({
+    this.wishlistItems = const [],
+    this.loading = false,
+  });
 
-class WishlistRemoveState extends WishlistState {
-  final int index;
-
-  WishlistRemoveState({required this.index});
+  WishlistState copyWith({
+    List<ProductDataModel>? wishlistItems,
+    bool? loading,
+  }) {
+    return WishlistState(
+      wishlistItems: wishlistItems ?? this.wishlistItems,
+      loading: loading ?? this.loading,
+    );
+  }
 }
